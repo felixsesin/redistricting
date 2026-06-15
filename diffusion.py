@@ -1,17 +1,22 @@
+from clustering import Clustering
 from ensemble import Ensemble
 from horizontal import Horizontal
 from vertical import Vertical
 
 from scipy.sparse.linalg import eigs
 import time
+import pathlib
 from pathlib import Path
+import pickle
 
 class DiffusionMap:
 
     def __init__(self,
                  up_to: int,
                  alpha: float,
-                 omega: float):
+                 omega: float,
+                 dim: int,
+                 k_max: int):
         
         start = time.time()
 
@@ -39,6 +44,29 @@ class DiffusionMap:
         self.eigenset = self.getEigenset()
         print(f"GOT EIGENSET IN {time.time()-start}")
         start = time.time()
+
+        self.clusters = Clustering(dim, k_max, self.eigenset).clusters
+        print(f"GOT CLUSTERS IN {time.time()-start}")
+        start = time.time()
+
+
+    @classmethod
+    def load(cls, file: str):
+
+        original = pathlib.PosixPath
+
+        try:
+            pathlib.PosixPath = pathlib.WindowsPath
+
+            path = Path('data') / file
+
+            with open(path, 'rb') as f:
+                obj = pickle.load(f)
+
+        finally:
+            pathlib.PosixPath = original
+
+        return obj
 
     def getEigenset(self) -> list[tuple[float, list[float]]]:
 
