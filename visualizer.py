@@ -177,6 +177,45 @@ class Visualizer:
         lam, vector = self.diffusion.eigenset[ind]
         self.plotPrecincts(vector, ind=ind, lam=lam)
 
+    def plotCluster(self, ind: int) -> None:
+        
+        from collections import Counter
+        import numpy as np
+
+        labels = self.diffusion.clusters[0]
+        nodes = self.diffusion.ensemble.nodes
+        k = len(labels)
+
+        if ind < 0 or ind >= k:
+            raise ValueError(
+                f"cluster_index must be between 0 and {k-1}"
+            )
+
+        precinct_counts: Counter[str] = Counter()
+
+        for node, label in zip(nodes, labels):
+            if int(label) != ind:
+                continue
+
+            for precinct in node.district.precincts:
+                precinct_counts[precinct.precinct_name] += 1
+
+        # plotPrecincts() sums values from every node sharing a precinct.
+        # Divide each counter among those occurrences so the final plotted
+        # value equals the original counter.
+        occurrences = Counter(
+            node.precinct.precinct_name
+            for node in nodes
+        )
+
+        vector = np.array([
+            precinct_counts[node.precinct.precinct_name]
+            / occurrences[node.precinct.precinct_name]
+            for node in nodes
+        ])
+
+        self.plotPrecincts([float(x) for x in vector.flatten()], zero_as_missing=True)
+
     def precinctWeights(self, vector: Sequence[float]) -> dict[str, float]:
         
         weights = defaultdict(float)
@@ -192,17 +231,29 @@ class Visualizer:
         vector: Sequence[float],
         ind: int | None = None,
         lam: float | None = None,
+        zero_as_missing: bool = False,
     ) -> None:
+        import numpy as np
         import geopandas as gpd
+
         from bokeh.io import show
-        from bokeh.models import ColumnDataSource, LinearColorMapper, ColorBar, HoverTool
+        from bokeh.models import (
+            ColorBar,
+            ColumnDataSource,
+            HoverTool,
+            LinearColorMapper,
+        )
         from bokeh.palettes import Turbo256
         from bokeh.plotting import figure
 
         shape = gpd.read_file(self.shape_path)
         weights = self.precinctWeights(vector)
 
-        shape["value"] = shape["NAME"].map(weights).fillna(0.0)
+        # Unrepresented precincts become NaN rather than zero.
+        shape["value"] = shape["NAME"].map(weights)
+
+        if zero_as_missing:
+            shape.loc[shape["value"] == 0, "value"] = np.nan
 
         xs, ys, names, vals = [], [], [], []
 
@@ -216,11 +267,34 @@ class Visualizer:
             else:
                 polygons = []
 
+            value = row["value"]
+
             for polygon in polygons:
                 xs.append(list(polygon.exterior.xy[0]))
                 ys.append(list(polygon.exterior.xy[1]))
                 names.append(row["NAME"])
-                vals.append(float(row["value"]))
+                vals.append(float(value) if not np.isnan(value) else np.nan)
+
+        finite_values = np.asarray(vals, dtype=float)
+        finite_values = finite_values[np.isfinite(finite_values)]
+
+        if len(finite_values) == 0:
+            low, high = -1.0, 1.0
+        elif np.min(finite_values) >= 0:
+            # Sequential scale for nonnegative counts.
+            low = 0.0
+            high = max(float(np.max(finite_values)), 1.0)
+        else:
+            # Symmetric scale for signed eigenvectors and core values.
+            max_abs = max(float(np.max(np.abs(finite_values))), 1e-12)
+            low, high = -max_abs, max_abs
+
+        mapper = LinearColorMapper(
+            palette=list(reversed(Turbo256)),
+            low=low,
+            high=high,
+            nan_color="white",
+        )
 
         source = ColumnDataSource({
             "xs": xs,
@@ -228,14 +302,6 @@ class Visualizer:
             "name": names,
             "value": vals,
         })
-
-        max_abs = max((abs(v) for v in vals), default=1.0) or 1.0
-
-        mapper = LinearColorMapper(
-            palette=list(reversed(Turbo256)),
-            low=-max_abs,
-            high=max_abs,
-        )
 
         if ind is not None and lam is not None:
             title = f"lambda {ind} = {lam:.6f}"
