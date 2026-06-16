@@ -5,12 +5,13 @@ Numerical experiments to-do:
     1. ensemble
         -> change the distance function
             -> k-norm between core vectors
-                -> translate and scale core (mu and sigma)
-                -> change k in k-normalizing
+                -> translate and scale core (mu and sigma), see Node.coreDistance()
+                -> change k in k-normalizing, see Node.k
                 
-            -> Hamming distance
-                -> equal precinct weights
+            -> Hamming distance, see Node.hammingDistance()
+                -> equal precinct weights (default Hamming)
                 -> population weighted precinct weights
+                -> relative population weighted Hamming
                 -> partisan weighted precinct weights
 
         -> use a different forcing vector for cores
