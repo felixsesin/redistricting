@@ -1,6 +1,6 @@
 import numpy as np
 
-from precinct import Precinct
+from src.precinct import Precinct
 
 class Core:
 

@@ -1,9 +1,9 @@
 import numpy as np
 import scipy.sparse as sp
-from scipy.sparse import spmatrix, csr_matrix
+from scipy.sparse import csr_matrix
 
-from ensemble import Ensemble
-from district import District
+from src.ensemble import Ensemble
+from src.district import District
 
 class Vertical:
 

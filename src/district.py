@@ -1,5 +1,5 @@
-from core import Core
-from precinct import Precinct
+from src.core import Core
+from src.precinct import Precinct
 
 class District:
 

@@ -4,17 +4,20 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Sequence
 
-from diffusion import DiffusionMap
+from src.diffusion import DiffusionMap
 
+ROOT = Path(__file__).resolve().parent.parent
+IMG_DIR = ROOT / "imgs"
+SHAPE_PATH = ROOT / "ct" / "shape" / "CT.shp"
 
 class Visualizer:
 
     def __init__(self, diffusion: DiffusionMap):
         
         self.diffusion = diffusion
-        self.root = Path(__file__).parent
-        self.img_dir = self.root / "imgs"
-        self.shape_path = self.root / "ct" / "shape" / "CT.shp"
+        self.root = ROOT
+        self.img_dir = IMG_DIR
+        self.shape_path = SHAPE_PATH
 
     def handleMatplotlib(self,
                          fig, plot_type: str,

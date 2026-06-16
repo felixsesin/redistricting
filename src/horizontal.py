@@ -2,7 +2,7 @@ import numpy as np
 import scipy.sparse as sp
 from scipy.sparse import spmatrix
 
-from ensemble import Ensemble
+from src.ensemble import Ensemble
 
 class Horizontal:
 

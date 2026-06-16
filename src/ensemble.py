@@ -1,19 +1,24 @@
 import ct.network
 
-from district import District
-from node import Node
-from precinct import Precinct
+from src.district import District
+from src.node import Node
+from src.precinct import Precinct
 
 import ast
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+CT_DIR = ROOT / "ct"
+PLANS_DIR = CT_DIR / "plans"
+SHAPE_DIR = CT_DIR / "shape"
 
 class Ensemble:
 
     def __init__(self,
                  up_to: int):
         
-        self.district_path = Path('ct') / 'plans' / 'small.jsonl'
-        self.shape_path    = Path('ct') / 'shape' / 'CT.shp'
+        self.district_path = PLANS_DIR / 'small.jsonl'
+        self.shape_path    = SHAPE_DIR / 'CT.shp'
 
         self.network = ct.network.info
 

@@ -1,7 +1,7 @@
 import numpy as np
 
-from district import District
-from precinct import Precinct
+from src.district import District
+from src.precinct import Precinct
 
 class Node:
 

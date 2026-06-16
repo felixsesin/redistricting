@@ -1,13 +1,16 @@
-from clustering import Clustering
-from ensemble import Ensemble
-from horizontal import Horizontal
-from vertical import Vertical
+from src.clustering import Clustering
+from src.ensemble import Ensemble
+from src.horizontal import Horizontal
+from src.vertical import Vertical
 
 from scipy.sparse.linalg import eigs
 import time
 import pathlib
 from pathlib import Path
 import pickle
+
+ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = ROOT / "data"
 
 class DiffusionMap:
 
@@ -58,7 +61,7 @@ class DiffusionMap:
         try:
             pathlib.PosixPath = pathlib.WindowsPath
 
-            path = Path('data') / file
+            path = DATA_DIR / file
 
             with open(path, 'rb') as f:
                 obj = pickle.load(f)
