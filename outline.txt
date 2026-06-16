@@ -18,6 +18,9 @@ redistricting/
 |   |-- .gitkeep
 |   |-- eigenset97.pkl
 |
+|-- experiments/
+|   |-- experiments.txt
+|
 |-- imgs/
 |
 |-- literature/
