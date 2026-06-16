@@ -1,0 +1,47 @@
+redistricting/
+|
+|-- ct/
+|   |-- plans/
+|   |   |-- small.jsonl
+|   |
+|   |-- shape/
+|   |   |-- CT.cpg
+|   |   |-- CT.dbf
+|   |   |-- CT.prj
+|   |   |-- CT.shp
+|   |   |-- CT.shx
+|   |
+|   |-- __init__.py
+|   |-- network.py
+|
+|-- data/
+|   |-- .gitkeep
+|   |-- eigenset97.pkl
+|
+|-- imgs/
+|
+|-- literature/
+|   |-- ~$w_diffusion.docx
+|   |-- leo_code.txt
+|   |-- new_diffusion.docx
+|
+|-- src/
+|   |-- __init__.py
+|   |-- clustering.py
+|   |-- core.py
+|   |-- diffusion.py
+|   |-- district.py
+|   |-- ensemble.py
+|   |-- horizontal.py
+|   |-- node.py
+|   |-- precinct.py
+|   |-- vertical.py
+|   |-- visualizer.py
+|
+|-- .gitignore
+|-- driver.py
+|-- outline.txt
+
+
+
+
