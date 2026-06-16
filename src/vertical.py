@@ -28,10 +28,11 @@ class Vertical:
             total = sum(core)
             pi = core / total
 
-            Q = self.randomWalk(district)
+            Q = self.getQ(type = 'only_neighbours',
+                          district = district)
 
-            block = self.metropolisHastings(pi=pi,
-                                            Q=Q)
+            block = self.metropolisHastings(pi = pi,
+                                            Q  = Q)
             
             blocks.append(block)
 
@@ -78,7 +79,20 @@ class Vertical:
 
         return P
     
-    def randomWalk(self, district: District) -> csr_matrix:
+    def getQ(self, type: str, district: District) -> csr_matrix:
+
+        """
+        Choose initial matrix Q for Metropolis-Hastings:
+            type = 'only_neighbours' or 'all_precincts'
+        """
+
+        if type == 'only_neighbours': return self.onlyNeighbours(district)
+
+        elif type == 'all_precincts': return self.allPrecincts(len(district.precincts))
+
+        else: return NotImplemented
+
+    def onlyNeighbours(self, district: District) -> csr_matrix:
 
         """
         return the transition matrix for a simple random walk
@@ -117,5 +131,14 @@ class Vertical:
             for nbr_id in neighbours:
                 j = index[nbr_id]
                 Q[i, j] = prob
+
+        return Q.tocsr() # type: ignore
+    
+    def allPrecincts(self, n: int) -> csr_matrix:
+
+        Q = sp.lil_matrix((n,n), dtype=float)
+        Q[:, :] = 1 / (n - 1)
+
+        for i in range(n): Q[i,i] = 0
 
         return Q.tocsr() # type: ignore
