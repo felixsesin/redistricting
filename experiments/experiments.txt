@@ -1,0 +1,39 @@
+Numerical experiments to-do:
+
+    -> change omega
+
+    1. ensemble
+        -> change the distance function
+            -> k-norm between core vectors
+                -> translate and scale core (mu and sigma)
+                -> change k in k-normalizing
+                
+            -> Hamming distance
+                -> equal precinct weights
+                -> population weighted precinct weights
+                -> partisan weighted precinct weights
+
+        -> use a different forcing vector for cores
+            -> equal weights
+            -> population weighted
+            -> partisan weighted
+
+    2. vertical
+        -> change the matrix Q
+            -> equal probability random walk
+            -> vertical diffusion everywhere
+
+        -> translate the core before normalizing
+            -> no translation
+            -> substract the minimum
+            -> subtract anything in [0, min]
+
+        -> use other choices for transition matrix
+            -> Metropolis-Hastings
+            -> MCMC algorithm
+            -> search for others
+
+    3. horizontal
+        -> change alpha in the Gaussian kernel
+
+
