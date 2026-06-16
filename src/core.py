@@ -23,6 +23,15 @@ class Core:
         # precincts weighted by population
         column = [[float(p.population)] for p in self.precincts]
 
+        # precincts weighted by GOP vote total
+        # column = [[float(p.gop_vote)] for p in self.precincts]
+
+        # precincts weighted by DEM vote total
+        # column = [[float(p.dem_vote)] for p in self.precincts]
+
+        # precincts weighted by GOP vote percent
+        # column = [[float(p.gop_vote / (p.gop_vote + p.dem_vote))] for p in self.precincts]
+
         column.append([0.0])
 
         return np.array(column, dtype=float)
