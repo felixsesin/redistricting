@@ -43,5 +43,11 @@ redistricting/
 |-- outline.txt
 
 
+Algorithm runtime optimization strategies:
 
+    1. parallelize tasks in Horizontal so that Hamilton can
+       leverage multiple cores, as Horizontal takes by far the
+       most time to run
 
+    2. store vertical and horizontal adjacency for fast lookup
+       in constructing V and H
