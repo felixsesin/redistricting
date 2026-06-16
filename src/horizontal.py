@@ -33,7 +33,10 @@ class Horizontal:
 
                 if not node.canHorizontallyDiffuseTo(neighbour): continue
 
-                distance = node.distanceTo(neighbour)
+                distance = node.distanceTo(neighbour,
+                                           method = 'core',
+                                           mode = 'normal')
+                
                 ker = self.kernel(distance)
 
                 matrix[i,j] = ker
