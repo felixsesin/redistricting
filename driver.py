@@ -24,13 +24,25 @@ with open(path, 'rb') as f:
 from src.diffusion import DiffusionMap
 from src.visualizer import Visualizer
 
-diffusion = DiffusionMap(up_to=5,
-                         alpha=0.03,
-                         omega=0.5,
-                         dim=50,
-                         k_max=10)
+parameters = {
+    'up_to': 3,
+    'omega': 0.5,
+    'dim': 200,
+    'k_max': 20,
+
+    'method': 'core',
+    'mode': (2, 'normal'),
+    'data': 'population',
+
+    'subtract': 0.0,
+    'q_type': 'only_neighbours',
+
+    'alpha': 0.3
+}
+
+diffusion = DiffusionMap(parameters)
 
 visualize = Visualizer(diffusion)
 
 for i in range(10):
-    visualize.plotCluster(ind=i)
+    visualize.plotEigenplan(ind=i)

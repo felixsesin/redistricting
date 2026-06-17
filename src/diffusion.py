@@ -15,32 +15,50 @@ DATA_DIR = ROOT / "data"
 class DiffusionMap:
 
     def __init__(self,
-                 up_to: int,
-                 alpha: float,
-                 omega: float,
-                 dim: int,
-                 k_max: int):
+                 parameters: dict[str, int | float | str | tuple]):
         
+        """
+        Give HDM parameters like:
+
+        parameters = {
+            'up_to': 97,
+            'omega': 0.5,
+            'dim': 200,
+            'k_max': 20,
+            
+            'method': 'core',
+            'mode': (2, 'normal'),
+            'data': 'population',
+
+            'subtract': 0.0,
+            'q_type': 'only_neighbours',
+
+            'alpha': 0.3
+        }
+        """
+
         start = time.time()
 
-        self.up_to = up_to
-        self.alpha = alpha
-        self.omega = omega
+        self.up_to: int = parameters['up_to'] # type: ignore
+        self.omega: float = parameters['omega'] # type: ignore
+        self.dim: int = parameters['dim'] # type: ignore
+        self.k_max: int = parameters['k_max'] # type: ignore
 
-        self.ensemble = Ensemble(up_to=up_to)
+        self.ensemble = Ensemble(parameters = parameters)
         print(f"GOT ENSEMBLE IN {time.time()-start}")
         start = time.time()
 
-        self.vertical = Vertical(ensemble=self.ensemble).matrix
+        self.vertical = Vertical(ensemble = self.ensemble,
+                                 parameters = parameters).matrix
         print(f"GOT VERTICAL IN {time.time()-start}")
         start = time.time()
 
-        self.horizontal = Horizontal(ensemble=self.ensemble,
-                                     alpha=alpha).matrix
+        self.horizontal = Horizontal(ensemble = self.ensemble,
+                                     parameters = parameters).matrix
         print(f"GOT HORIZONTAL IN {time.time()-start}")
         start = time.time()
 
-        self.diffusion = omega*self.vertical + (1-omega)*self.horizontal
+        self.diffusion = self.omega*self.vertical + (1-self.omega)*self.horizontal
         print(f"GOT DIFFUSION IN {time.time()-start}")
         start = time.time()
 
@@ -48,7 +66,7 @@ class DiffusionMap:
         print(f"GOT EIGENSET IN {time.time()-start}")
         start = time.time()
 
-        self.clusters = Clustering(dim, k_max, self.eigenset).clusters
+        self.clusters = Clustering(self.dim, self.k_max, self.eigenset).clusters
         print(f"GOT CLUSTERS IN {time.time()-start}")
         start = time.time()
 

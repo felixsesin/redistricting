@@ -5,17 +5,20 @@ from src.precinct import Precinct
 class Core:
 
     def __init__(self,
-                 precincts: list[Precinct]):
+                 precincts: list[Precinct],
+                 parameters: dict[str, int | float | str | tuple]):
         
         self.precincts = precincts
         self.id_to_precinct = {p.precinct_id: i
                                for i, p in enumerate(self.precincts)}
 
-        self.pop_vector = self.getForcingVector(data='population')
+        self.data: str = parameters['data'] # type: ignore
+
+        self.pop_vector = self.getForcingVector()
         self.laplacian = self.getLaplacian()
         self.core = self.getCore()
 
-    def getForcingVector(self, data: str) -> np.ndarray:
+    def getForcingVector(self) -> np.ndarray:
     
         """
         type parameter may be:
@@ -30,19 +33,19 @@ class Core:
         # equal weights as default
         column = [[1.0] for p in self.precincts]
 
-        if data == 'population':
+        if self.data == 'population':
             column = [[float(p.population)] for p in self.precincts]
 
-        elif data == 'republican':
+        elif self.data == 'republican':
             column = [[float(p.gop_vote)] for p in self.precincts]
 
-        elif data == 'democrat':
+        elif self.data == 'democrat':
             column = [[float(p.dem_vote)] for p in self.precincts]
 
-        elif data == 'voting_pop':
+        elif self.data == 'voting_pop':
             column = [[float(p.gop_vote + p.dem_vote)] for p in self.precincts]
 
-        elif data == 'vote':
+        elif self.data == 'vote':
             column = [[float(p.gop_vote / (p.gop_vote + p.dem_vote))] for p in self.precincts]
 
         column.append([0.0])

@@ -6,7 +6,8 @@ class District:
     def __init__(self,
                  plan: int,
                  district: int,
-                 precincts: list[Precinct]):
+                 precincts: list[Precinct],
+                 parameters: dict[str, int | float | str | tuple]):
         
         self.plan = plan
         self.district = district
@@ -19,7 +20,7 @@ class District:
         self.gop_vote = sum(p.gop_vote for p in precincts)
         self.area = sum(p.area for p in precincts)
 
-        self.core = Core(self.precincts).core
+        self.core = Core(self.precincts, parameters).core
     
     def __str__(self) -> str:
 

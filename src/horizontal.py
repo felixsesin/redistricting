@@ -8,11 +8,13 @@ class Horizontal:
 
     def __init__(self,
                  ensemble: Ensemble,
-                 alpha: float):
+                 parameters: dict[str, int | float | str | tuple]):
         
-        self.nodes = ensemble.nodes
-        self.alpha = alpha
+        self.alpha: float = parameters['alpha'] # type: ignore
+        self.method: str = parameters['method'] # type: ignore
+        self.mode: tuple | str = parameters['mode'] # type: ignore
 
+        self.nodes = ensemble.nodes
         self.matrix = self.getHorizontalMatrix()
 
     def kernel(self, distance: float) -> float:
@@ -34,8 +36,8 @@ class Horizontal:
                 if not node.canHorizontallyDiffuseTo(neighbour): continue
 
                 distance = node.distanceTo(neighbour,
-                                           method = 'core',
-                                           mode = 'normal')
+                                           method = self.method,
+                                           mode = self.mode)
                 
                 ker = self.kernel(distance)
 

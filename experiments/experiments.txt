@@ -22,15 +22,15 @@ parameters for DiffusionMap:
                       'democrat', 'voting_pop', 'vote'
     
     vertical
+        8. value to be subtracted from core (subtract)
+            -> subtract = 'min' or float
+        9. type of matrix Q for Metropolis-Hastings (q_type)
+            -> q_type = 'only_neighbours', 'all_precincts'        
 
     horizontal
+        10. alpha for Gaussian kernel (alpha)
 
-    
-    1. distance method and mode
-    2. k for k-norm
-    3. forcing vector type
-    4. matrix Q for Metropolis-Hastings
-    5. omega
+
 
 
 Numerical experiments to-do:

@@ -8,8 +8,12 @@ from src.district import District
 class Vertical:
 
     def __init__(self,
-                 ensemble: Ensemble):
+                 ensemble: Ensemble,
+                 parameters: dict[str, int | float | str | tuple]):
         
+        self.subtract: float | str = parameters['subtract'] # type: ignore
+        self.q_type: str = parameters['q_type'] # type: ignore
+
         self.districts = ensemble.districts
         self.matrix = self.getVerticalMatrix()
 
@@ -25,10 +29,18 @@ class Vertical:
         for district in self.districts:
 
             core = district.core
+
+            if isinstance(self.subtract, float):
+                for i in range(len(core)): core[i] -= self.subtract
+            
+            elif self.subtract == 'min':
+                min_entry = np.min(core)
+                for i in range(len(core)): core[i] -= min_entry
+
             total = sum(core)
             pi = core / total
 
-            Q = self.getQ(type = 'only_neighbours',
+            Q = self.getQ(q_type = self.q_type,
                           district = district)
 
             block = self.metropolisHastings(pi = pi,
@@ -79,16 +91,16 @@ class Vertical:
 
         return P
     
-    def getQ(self, type: str, district: District) -> csr_matrix:
+    def getQ(self, q_type: str, district: District) -> csr_matrix:
 
         """
         Choose initial matrix Q for Metropolis-Hastings:
             type = 'only_neighbours' or 'all_precincts'
         """
 
-        if type == 'only_neighbours': return self.onlyNeighbours(district)
+        if q_type == 'only_neighbours': return self.onlyNeighbours(district)
 
-        elif type == 'all_precincts': return self.allPrecincts(len(district.precincts))
+        elif q_type == 'all_precincts': return self.allPrecincts(len(district.precincts))
 
         else: return NotImplemented
 

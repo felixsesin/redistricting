@@ -15,14 +15,16 @@ SHAPE_DIR = CT_DIR / "shape"
 class Ensemble:
 
     def __init__(self,
-                 up_to: int):
+                 parameters: dict[str, int | float | str | tuple]):
         
         self.district_path = PLANS_DIR / 'small.jsonl'
         self.shape_path    = SHAPE_DIR / 'CT.shp'
 
         self.network = ct.network.info
 
-        self.up_to = up_to
+        self.parameters = parameters
+
+        self.up_to: int = parameters['up_to'] # type: ignore
         self.precincts = self.getPrecincts()
         self.districts = self.getDistricts()
         self.nodes = self.getNodes()
@@ -66,7 +68,8 @@ class Ensemble:
 
                     district = District(plan = i-3,
                                         district = d,
-                                        precincts=precincts)
+                                        precincts = precincts,
+                                        parameters = self.parameters)
                     districts.append(district)
 
         return districts
