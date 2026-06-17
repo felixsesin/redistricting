@@ -11,26 +11,39 @@ class Core:
         self.id_to_precinct = {p.precinct_id: i
                                for i, p in enumerate(self.precincts)}
 
-        self.pop_vector = self.getPopVector()
+        self.pop_vector = self.getForcingVector(data='population')
         self.laplacian = self.getLaplacian()
         self.core = self.getCore()
 
-    def getPopVector(self) -> np.ndarray:
+    def getForcingVector(self, data: str) -> np.ndarray:
     
-        # precincts with equal weights
-        # column = [[1.0] for p in self.precincts]
+        """
+        type parameter may be:
+            -> 'equal' for equal weights, 1.0
+            -> 'population' for precinct populations
+            -> 'republican' for GOP vote total
+            -> 'democrat' for DEM vote total
+            -> 'voting_pop' for sum of GOP and DEM votes
+            -> 'vote' for GOP vote as % of total vote
+        """
 
-        # precincts weighted by population
-        column = [[float(p.population)] for p in self.precincts]
+        # equal weights as default
+        column = [[1.0] for p in self.precincts]
 
-        # precincts weighted by GOP vote total
-        # column = [[float(p.gop_vote)] for p in self.precincts]
+        if data == 'population':
+            column = [[float(p.population)] for p in self.precincts]
 
-        # precincts weighted by DEM vote total
-        # column = [[float(p.dem_vote)] for p in self.precincts]
+        elif data == 'republican':
+            column = [[float(p.gop_vote)] for p in self.precincts]
 
-        # precincts weighted by GOP vote percent
-        # column = [[float(p.gop_vote / (p.gop_vote + p.dem_vote))] for p in self.precincts]
+        elif data == 'democrat':
+            column = [[float(p.dem_vote)] for p in self.precincts]
+
+        elif data == 'voting_pop':
+            column = [[float(p.gop_vote + p.dem_vote)] for p in self.precincts]
+
+        elif data == 'vote':
+            column = [[float(p.gop_vote / (p.gop_vote + p.dem_vote))] for p in self.precincts]
 
         column.append([0.0])
 

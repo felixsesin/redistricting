@@ -1,3 +1,38 @@
+
+parameters for DiffusionMap:
+
+    diffusion
+        1. number of plans to sample (up_to)
+        2. omega
+        3. truncation dimension (dim)
+        4. max cluster number (k_max)
+        5. file ***optional***
+
+    ensemble (ensemble, precinct, district, core, node)
+        5. distance function (method)
+            -> method = 'core', 'hamming'
+        6. distance mode (mode)
+            -> for method = 'core' -> mode = (power, 'normal'),
+                                             (power, mu, sig),
+                                             (power, mu_1, sig_1, mu_2, sig_2)
+            -> for method = 'hamming' -> mode = 'equal', 'population', 'relative',
+                                                'republican', 'democrat', 'voting_pop', 'vote' 
+        7. forcing vector (data)
+            -> data = 'equal', 'population', 'republican',
+                      'democrat', 'voting_pop', 'vote'
+    
+    vertical
+
+    horizontal
+
+    
+    1. distance method and mode
+    2. k for k-norm
+    3. forcing vector type
+    4. matrix Q for Metropolis-Hastings
+    5. omega
+
+
 Numerical experiments to-do:
 
     -> change omega
@@ -14,7 +49,7 @@ Numerical experiments to-do:
                 -> relative population weighted Hamming
                 -> partisan weighted precinct weights
 
-        -> use a different forcing vector for cores
+        -> use a different forcing vector for cores, see core.getPopVector()
             -> equal weights
             -> population weighted
             -> partisan weighted
@@ -35,6 +70,6 @@ Numerical experiments to-do:
             -> search for others
 
     3. horizontal
-        -> change alpha in the Gaussian kernel
+        -> change alpha in the Gaussian kernel, 
 
 
