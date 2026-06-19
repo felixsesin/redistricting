@@ -33,11 +33,14 @@ class DiffusionMap:
             'subtract': 0.0,
             'q_type': 'only_neighbours',
 
+            'num_workers': 32
             'alpha': 0.3
         }
         """
 
-        start = time.time()
+        t_start = time.time()
+
+        self.parameters = parameters
 
         self.up_to: int = parameters['up_to'] # type: ignore
         self.omega: float = parameters['omega'] # type: ignore
@@ -45,30 +48,39 @@ class DiffusionMap:
         self.k_max: int = parameters['k_max'] # type: ignore
 
         self.ensemble = Ensemble(parameters = parameters)
-        print(f"GOT ENSEMBLE IN {time.time()-start}")
-        start = time.time()
+        print(f"GOT ENSEMBLE IN {time.time()-t_start}")
+        t_ensemble = time.time()
+        self.tot_ensemble = t_ensemble - t_start
 
         self.vertical = Vertical(ensemble = self.ensemble,
                                  parameters = parameters).matrix
-        print(f"GOT VERTICAL IN {time.time()-start}")
-        start = time.time()
+        print(f"GOT VERTICAL IN {time.time()-t_ensemble}")
+        t_vertical = time.time()
+        self.tot_vertical = t_vertical - t_ensemble
 
         self.horizontal = Horizontal(ensemble = self.ensemble,
                                      parameters = parameters).matrix
-        print(f"GOT HORIZONTAL IN {time.time()-start}")
-        start = time.time()
+        print(f"GOT HORIZONTAL IN {time.time()-t_vertical}")
+        t_horizontal = time.time()
+        self.tot_horizontal = t_horizontal - t_vertical
 
         self.diffusion = self.omega*self.vertical + (1-self.omega)*self.horizontal
-        print(f"GOT DIFFUSION IN {time.time()-start}")
-        start = time.time()
+        print(f"GOT DIFFUSION IN {time.time()-t_horizontal}")
+        t_diffusion = time.time()
+        self.tot_diffusion = t_diffusion - t_horizontal
 
         self.eigenset = self.getEigenset()
-        print(f"GOT EIGENSET IN {time.time()-start}")
-        start = time.time()
+        print(f"GOT EIGENSET IN {time.time()-t_diffusion}")
+        t_eigenset = time.time()
+        self.tot_eigenset = t_eigenset - t_diffusion
 
-        self.clusters = Clustering(self.dim, self.k_max, self.eigenset).clusters
-        print(f"GOT CLUSTERS IN {time.time()-start}")
-        start = time.time()
+        #self.clusters = Clustering(self.dim, self.k_max, self.eigenset).clusters
+        #print(f"GOT CLUSTERS IN {time.time()-t_eigenset}")
+        #t_clusters = time.time()
+        #self.tot_clusters = t_clusters - t_eigenset
+
+        self.total_time = t_eigenset - t_start
+        
 
 
     @classmethod

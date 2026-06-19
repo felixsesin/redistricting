@@ -29,7 +29,7 @@ parameters for DiffusionMap:
 
     horizontal
         10. alpha for Gaussian kernel (alpha)
-
+        11. beta for anisotropic normalization (beta)
 
 
 
